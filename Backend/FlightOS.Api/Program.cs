@@ -1,19 +1,36 @@
 
+using FlightOS.Api.Seeding;
+using FlightOS.Application.DependencyInjection;
+using FlightOS.Infrastructure.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
 namespace FlightOS.Api
 {
+    /// <summary>
+    /// The main entry point for the application.
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        /// <param name="args">An array of command-line arguments.</param>
         public static void Main(string[] args)
         {
             // Define application variables
             var builder = WebApplication.CreateBuilder(args);
-            var configuration = builder.Configuration;
+            var Configuration = builder.Configuration;
             var environment = builder.Environment;
             var services = builder.Services;
 
-            // Add services to the container.
+            // Register Infrastructure services
+            services.AddInfrastructureServices(Configuration);
+
+            // Register Application services
+            services.AddApplicationServices(Configuration);
+
+            // Register Seeding services
+            services.AddHostedService<UserRoleInitializer>();
 
             services.AddControllers();
             services.AddEndpointsApiExplorer();
@@ -55,9 +72,14 @@ namespace FlightOS.Api
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            if (environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
 
             // Correct middleware order
@@ -68,9 +90,11 @@ namespace FlightOS.Api
                 c.RoutePrefix = string.Empty;
             });
 
+            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("AllowSpecificOrigin");
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.MapControllers();
 
