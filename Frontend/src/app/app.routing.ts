@@ -1,21 +1,43 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from '../modules/auth/login/login.component';
-import { RegisterComponent } from '../modules/auth/register/register.component';
-import { ChangePasswordComponent } from '../modules/auth/change-password/change-password.component';
-import { UpdateProfileComponent } from '../modules/user-management/update-profile/update-profile.component';
-import { NotFoundComponent } from '../common/pages/not-found/not-found.component';
-import { HomeComponent } from '../common/pages/home/home.component';
+import { AuthGuard } from './core/guards/auth.guard';
+
+import { HomeComponent } from './shared/pages/home/home.component';
+import { SupportComponent } from './shared/pages/support/support.component';
+import { NotFoundComponent } from './shared/pages/not-found/not-found.component';
 
 export const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: 'not-found', component: NotFoundComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'change-password', component: ChangePasswordComponent },
-  { path: 'update-profile', component: UpdateProfileComponent },
-  { path: '', redirectTo: '/login', pathMatch: 'full' }, // Redirect to login by default
-  { path: '**', redirectTo: '/not-found' } // Redirect for any unknown paths
+  { 
+    path: 'auth', 
+    loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule) 
+  },
+  { 
+    path: 'customer-dashboard', 
+    canActivate: [AuthGuard], // Protect the customer dashboard route
+    loadChildren: () => import('./features/customer-dashboard/customer-dashboard.module').then(m => m.CustomerDashboardModule) 
+  },
+  { 
+    path: 'admin-dashboard',
+    canActivate: [AuthGuard], // Protect the admin dashboard route
+    loadChildren: () => import('./features/admin-dashboard/admin-dashboard.module').then(m => m.AdminDashboardModule) 
+  },
+  {
+    path: 'home',
+    component: HomeComponent
+  },
+  {
+    path: 'support',
+    component: SupportComponent
+  },
+  {
+    path: '',
+    redirectTo: '/home',
+    pathMatch: 'full'
+  },
+  {
+    path: '**',
+    component: NotFoundComponent  // Wildcard route for a 404 page
+  }
 ];
 
 @NgModule({
