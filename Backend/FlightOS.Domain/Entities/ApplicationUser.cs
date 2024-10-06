@@ -17,21 +17,21 @@ namespace FlightOS.Domain.Entities
         /// <summary>
         /// Gets or sets the address of the user.
         /// </summary>
-        public string Address { get; set; } = string.Empty;
+        public string? Address { get; set; } = null;
 
         /// <summary>
         /// Gets or sets the city of the user.
         /// </summary>
-        public string City { get; set; } = string.Empty;
+        public string? City { get; set; } = null;
 
         /// <summary>
         /// Gets or sets the state of the user.
         /// </summary>
-        public string State { get; set; } = string.Empty;
+        public string? State { get; set; } = null;
 
         /// <summary>
         /// Gets or sets the zip code of the user.
         /// </summary>
-        public string ZipCode { get; set; } = string.Empty;
+        public string? ZipCode { get; set; } = null;
     }
 }

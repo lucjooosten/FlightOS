@@ -4,6 +4,7 @@ using FlightOS.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Web;
 
 namespace FlightOS.Api.Controllers
 {
@@ -17,6 +18,7 @@ namespace FlightOS.Api.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IJwtTokenService _jwtTokenHelper;
+        private readonly IEmailService _emailService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationController"/> class.
@@ -24,11 +26,14 @@ namespace FlightOS.Api.Controllers
         /// <param name="userManager">The user manager.</param>
         /// <param name="roleManager">The role manager.</param>
         /// <param name="jwtTokenHelper">The JWT token helper.</param>
-        public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtTokenService jwtTokenHelper)
+        /// <param name="emailService">The email service.</param>
+        public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
+            IJwtTokenService jwtTokenHelper, IEmailService emailService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _jwtTokenHelper = jwtTokenHelper;
+            _emailService = emailService;
         }
 
         /// <summary>
@@ -108,9 +113,20 @@ namespace FlightOS.Api.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null) return NotFound("User not found.");
 
-            // Generate token and send email with reset link (email service required)
+            // Generate password reset token
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            // Send email logic here...
+            //var resetLink = Url.Action("ResetPassword", "Account", new { token, email = user.Email }, Request.Scheme);
+            var resetLink = $"https://flight-os.com/reset-password?token={HttpUtility.UrlEncode(token)}&email={model.Email}";
+
+            // Use the IEmailService to send the email
+            var subject = "Reset your password";
+            var messageBody = $@"
+                                <p>Hi {user.FirstName},</p>
+                                <p>You requested a password reset. Click the link below to reset your password:</p>
+                                <p><a href='{resetLink}' target='_blank'>Reset Password</a></p>
+                                <p>If you did not request this, please ignore this email.</p>
+                                <p>Thanks,<br/>FlightOS Team</p>";
+            await _emailService.SendEmailAsync(user.Email!, subject, messageBody);
 
             return Ok("Password reset email sent.");
         }

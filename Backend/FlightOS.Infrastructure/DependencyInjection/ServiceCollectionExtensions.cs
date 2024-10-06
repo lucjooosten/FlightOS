@@ -1,5 +1,7 @@
-﻿using FlightOS.Domain.Entities;
+﻿using FlightOS.Application.Interfaces;
+using FlightOS.Domain.Entities;
 using FlightOS.Infrastructure.Data;
+using FlightOS.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using static FlightOS.Infrastructure.Services.EmailService;
 
 namespace FlightOS.Infrastructure.DependencyInjection
 {
@@ -44,12 +47,20 @@ namespace FlightOS.Infrastructure.DependencyInjection
             });
 
             services.AddAuthorization(options =>
-                options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"))
-            );
+            {
+                options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("RequireCustomerRole", policy => policy.RequireRole("Customer"));
+            });
 
             // Add Repositories
             //services.AddScoped<IFlightRepository, FlightRepository>();
             //services.AddScoped<IBookingRepository, BookingRepository>();
+
+            // Register IEmailService with the Infrastructure's EmailService implementation
+            services.AddScoped<IEmailService, EmailService>();
+
+            // Load configuration from appsettings.json
+            services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
 
             return services;
         }
