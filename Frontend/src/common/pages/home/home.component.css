@@ -1,0 +1,158 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6; /* Added line-height for better readability */
+}
+
+/* Container */
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2.5em;
+    color: #007BFF;
+}
+
+/* Navigation */
+.navbar {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    background-color: #007BFF;
+}
+
+.navbar a {
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.navbar a:hover {
+    background-color: #0056b3;
+    border-radius: 4px;
+}
+
+/* Main Content */
+.main-content {
+    padding: 20px 0;
+}
+
+.main-content h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.main-content p {
+    line-height: 1.6;
+}
+
+/* Page Text */
+.page-text {
+    font-size: 1em; /* Default font size */
+    color: #333; /* Default text color */
+    margin-bottom: 20px; /* Space between paragraphs */
+}
+
+.page-text p {
+    margin: 0 0 10px; /* Space between lines */
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 20px 0;
+    border-top: 1px solid #ddd;
+    margin-top: 20px;
+}
+
+.footer p {
+    margin: 0;
+    color: #777;
+}
+
+.home-container {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.welcome-text {
+    font-size: 1.2em;
+    color: #34495e;
+    margin-bottom: 30px;
+}
+
+.explore-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.explore-button:hover {
+    background-color: #2980b9;
+}
+
+.section {
+    margin-top: 40px;
+    text-align: left;
+}
+
+.section h2 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.section p {
+    color: #34495e;
+    margin-bottom: 10px;
+}
+
+.section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.section ul li {
+    margin-bottom: 5px;
+}
+
+.section ul li a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.section ul li a:hover {
+    color: #2980b9;
+}

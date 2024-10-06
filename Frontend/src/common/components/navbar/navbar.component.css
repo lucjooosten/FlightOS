@@ -1,0 +1,34 @@
+/* navbar.component.css */
+
+.navbar {
+    background-color: #09294b; /* Match the footer color */
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    border-bottom: 1px solid #ddd; /* Add a border to match the footer */
+}
+
+.navbar a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    font-size: 17px;
+    transition: color 0.3s, background-color 0.3s; /* Add transition for hover effect */
+}
+
+.navbar a:hover {
+    background-color: #0769cb; /* Change hover color to match the footer */
+    color: #fff;
+    text-decoration: underline;
+}
+
+.navbar a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.navbar-right {
+    float: right;
+}
