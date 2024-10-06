@@ -11,7 +11,7 @@ namespace FlightOS.Api.Controllers
     /// Controller for managing user accounts.
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/account")]
     public partial class AccountController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -32,102 +32,32 @@ namespace FlightOS.Api.Controllers
         }
 
         /// <summary>
-        /// Registers a new user with the specified details.
+        /// Retrieves the profile of the currently logged-in user.
         /// </summary>
-        /// <param name="model">The registration details.</param>
-        /// <returns>An IActionResult indicating the result of the registration.</returns>
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto model)
+        /// <returns>An IActionResult containing the user's profile information.</returns>
+        [HttpGet("user-profile")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> GetUserProfile()
         {
-            var user = new ApplicationUser
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded) return BadRequest(result.Errors);
-
-            // Assign the role (e.g., Customer by default)
-            var role = model.Role ?? "Customer";
-            if (!await _roleManager.RoleExistsAsync(role)) return BadRequest("Role does not exist.");
-            await _userManager.AddToRoleAsync(user, role);
-
-            return Ok("User registered successfully!");
-        }
-
-        /// <summary>
-        /// Logs in a user with the specified credentials.
-        /// </summary>
-        /// <param name="model">The login details.</param>
-        /// <returns>An IActionResult indicating the result of the login attempt.</returns>
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto model)
-        {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-
-            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
-                return Unauthorized();
-
-            var roles = await _userManager.GetRolesAsync(user);
-            var token = _jwtTokenHelper.GenerateJwtToken(user, roles);
-
-            return Ok(new { token });
-        }
-
-        /// <summary>
-        /// Creates a new role with the specified name.
-        /// </summary>
-        /// <param name="roleName">The name of the role to create.</param>
-        /// <returns>An IActionResult indicating the result of the role creation.</returns>
-        [Authorize(Roles = "Admin")]
-        [HttpPost("create-role")]
-        public async Task<IActionResult> CreateRole([FromBody] string roleName)
-        {
-            if (await _roleManager.RoleExistsAsync(roleName))
-                return BadRequest("Role already exists.");
-
-            var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
-            if (result.Succeeded)
-                return Ok("Role created successfully!");
-
-            return BadRequest(result.Errors);
-        }
-
-        /// <summary>
-        /// Assigns a role to a user.
-        /// </summary>
-        /// <param name="model">The model containing the user's email and the role to assign.</param>
-        /// <returns>An IActionResult indicating the result of the role assignment.</returns>
-        [Authorize(Roles = "Admin")]
-        [HttpPost("assign-role")]
-        public async Task<IActionResult> AssignRoleToUser([FromBody] AssignRoleDto model)
-        {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound("User not found.");
 
-            if (!await _roleManager.RoleExistsAsync(model.Role))
-                return BadRequest("Role does not exist.");
+            var address = new
+            {
+                user.Address,
+                user.City,
+                user.State,
+                user.ZipCode
+            };
 
-            var result = await _userManager.AddToRoleAsync(user, model.Role);
-            if (result.Succeeded)
-                return Ok("Role assigned successfully.");
-
-            return BadRequest(result.Errors);
-        }
-
-        /// <summary>
-        /// Retrieves all users.
-        /// </summary>
-        /// <returns>A list of all users.</returns>
-        [Authorize(Roles = "Admin")]
-        [HttpGet("all-users")]
-        public IActionResult GetAllUsers()
-        {
-            var users = _userManager.Users.ToList();
-            return Ok(users);
+            return Ok(new
+            {
+                user.FirstName,
+                user.LastName,
+                user.Email,
+                user.PhoneNumber,
+                address
+            });
         }
 
         /// <summary>
@@ -135,8 +65,8 @@ namespace FlightOS.Api.Controllers
         /// </summary>
         /// <param name="model">The user details to update.</param>
         /// <returns>An IActionResult indicating the result of the update operation.</returns>
-        [Authorize(Roles = "Admin")]
         [HttpPut("update-user")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDto model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
@@ -144,6 +74,12 @@ namespace FlightOS.Api.Controllers
 
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Address = model.Address;
+            user.City = model.City;
+            user.State = model.State;
+            user.ZipCode = model.ZipCode;
+
             var result = await _userManager.UpdateAsync(user);
 
             if (result.Succeeded)
@@ -157,8 +93,8 @@ namespace FlightOS.Api.Controllers
         /// </summary>
         /// <param name="email">The email of the user to delete.</param>
         /// <returns>An IActionResult indicating the result of the delete operation.</returns>
-        [Authorize(Roles = "Admin")]
         [HttpDelete("delete-user/{email}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -169,6 +105,18 @@ namespace FlightOS.Api.Controllers
                 return Ok("User deleted successfully.");
 
             return BadRequest(result.Errors);
+        }
+
+        /// <summary>
+        /// Retrieves all users.
+        /// </summary>
+        /// <returns>A list of all users.</returns>
+        [HttpGet("all-users")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult GetAllUsers()
+        {
+            var users = _userManager.Users.ToList();
+            return Ok(users);
         }
     }
 }

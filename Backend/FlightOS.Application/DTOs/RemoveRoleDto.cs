@@ -1,6 +1,6 @@
 ﻿namespace FlightOS.Application.DTOs
 {
-    public class LoginDto
+    public class RemoveRoleDto
     {
         /// <summary>
         /// Gets or sets the email address of the user.
@@ -8,8 +8,8 @@
         public string Email { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the password for the user.
+        /// Gets or sets the role to remove from the user.
         /// </summary>
-        public string Password { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
     }
 }
