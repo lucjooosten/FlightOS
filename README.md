@@ -1,4 +1,4 @@
-# Flight Booking Software (Working Title: Choose Your Name!)
+# Flight Booking Software
 
 This repository contains the source code for a flight booking software application built with Angular, .NET Core, and SQL Server. This software aims to provide a seamless and efficient platform for users to search, book, and manage flights.
 
@@ -21,50 +21,53 @@ This repository contains the source code for a flight booking software applicati
 ## Technologies Used
 
 *   **Frontend:** Angular
-*   **Backend:** .NET Core 6+ (C#)
+*   **Backend:** .NET Core 8+ (C#)
 *   **Database:** SQL Server
-*   **UI Library:** (e.g., Angular Material, PrimeNG, Clarity - Choose one)
-*   **Authentication:** ASP.NET Core Identity or JWT
+*   **UI Library:** (Angular Material, PrimeNG, Clarity)
+*   **Authentication:** ASP.NET Core Identity
 *   **Real-time Communication:** (Future) SignalR or WebSockets
 
 ## Project Structure
 
 ```
 FlightOS /
-├── Frontend /                       # Angular Frontend Application
-|   └── Dockerfile                     # Dockerfile Angular Client
-├── Backend /                        # .NET Core Web API
-|   └── FlightOS.Api /                 # Api Layer
-|   └── FLightOS.Domain /              # Domain Layer
-|   └── FlightOS.Application /         # Applicaiton Layer
-|   └── FlightOS.Infrastructure /      # Infrastructure Layer
-|   └── Dockerfile                     # Dockerfile .NET Server
-└── docker-compose.yml               # Docker Compose file
+├── Frontend /                          # Angular Frontend Application
+|   └── Dockerfile                      # Dockerfile Angular Client
+├── Backend /                           # .NET Core Web API
+|   └── FlightOS.Api /                  # Api Layer
+|── |──   └── Dockerfile                # Dockerfile .NET Server
+|   └── FLightOS.Domain /               # Domain Layer
+|   └── FlightOS.Application /          # Applicaiton Layer
+|   └── FlightOS.Infrastructure /       # Infrastructure Layer
+└── docker-compose.yml                  # Docker Compose file
 ```
 
 ## Getting Started
 
 ### Prerequisites
 
-*   .NET Core 6+ SDK
+*   .NET Core 8+ SDK
 *   Node.js and npm
 *   Angular CLI
 *   SQL Server
-*   (Optional) Visual Studio or VS Code
+*   Visual Studio and/or VS Code
 
 ### Installation
 
-1.  **Clone the repository:** `git clone https://github.com/your-username/flight-booking-app.git`
+1.  **Clone the repository:** `git clone https://github.com/lucjooosten/FlightOS.git`
 2.  **Backend:**
-    *   Navigate to the `backend` directory.
+    *   Navigate to the `Backend` directory.
     *   Restore NuGet packages: `dotnet restore`
     *   Update the connection string in `appsettings.json` to connect to your SQL Server database.
     *   Run database migrations to create the database schema.
     *   Start the API: `dotnet run`
 3.  **Frontend:**
-    *   Navigate to the `frontend` directory.
+    *   Navigate to the `Frontend` directory.
     *   Install npm packages: `npm install`
     *   Start the development server: `ng serve`
+4. **Docker Container:**
+    *   Navigate back to the root directory
+    *   Run the command: `docker-compose up --build`
 
 ## Contributing
 
